@@ -1,5 +1,10 @@
 #include "oct.h"
 
+//------------------------------------
+// build octree to a certain depth
+// child index is consider a 3-bit value 
+// where each bit decides the min/max of 
+// x/y/z axis respectively
 static OctNode* _build(int depth, const Vec3& minDim, const Vec3& maxDim)
 {
     OctNode* node = new OctNode;
@@ -39,6 +44,9 @@ void Octree::build(int maxDepth, const Vec3& minDim, const Vec3& maxDim)
     root = _build(maxDepth, minDim, maxDim);
 }
 
+//-----------------------------------
+// insert a point to tree
+// indexing is same as in tree build
 void Octree::insert(const Vec3& p)
 {
     OctNode* n = root;
@@ -55,6 +63,10 @@ void Octree::insert(const Vec3& p)
     n->data.push_back(p);
 }
 
+//----------------------------------
+// nearest neighbour search
+// instead of sorting the children distance to point,
+// the order can be hard coded as a table.
 static Vec3 _findNearest(OctNode* node, const Vec3& p, Vec3 best)
 {
     if(node->isLeaf)
@@ -90,7 +102,9 @@ Vec3 Octree::findNearestNeighbour(const Vec3& p) const
     return _findNearest(root, p, best);
 }
 
-
+//----------------------------------
+// find points in AABB
+// pretty straightforward
 static void _findPointsInAABB(OctNode* node, const Vec3& min, const Vec3& max, std::vector<Vec3>& out)
 {
     if(node->isLeaf)
@@ -122,7 +136,8 @@ std::vector<Vec3> Octree::findPointsInAABB(const Vec3& minDim, const Vec3& maxDi
     return out;
 }
 
-
+//-----------------------------------
+// debug dump
 static void _dump(OctNode* node, int depth, const Vec3& ref)
 {
     if(node->isLeaf)

@@ -1,6 +1,9 @@
 #include "kd.h"
 
-// recursive tree construction
+//---------------------------------------
+// tree construction
+// alternate axis everytime the depth increases
+// split at range mid point.
 static KDNode* _build(int depth, KDAxis axis, std::vector<Vec3>& p)
 {
     KDNode* node = new KDNode();
@@ -33,7 +36,10 @@ void KDTree::build(int maxDepth, const std::vector<Vec3>& points)
     root = _build(maxDepth, KDAxis::X, copy);
 }
 
-// recursive nearest neighbour search
+//------------------------------------------
+// nearest neighbour search
+// search the other branch when split point distance is less than
+// current best point
 static Vec3 _findNearest(KDNode* node, const Vec3& p, Vec3 best)
 {
     if(node->isLeaf)
@@ -67,7 +73,9 @@ Vec3 KDTree::findNearestNeighbour(const Vec3& p) const
     return _findNearest(root, p, best);
 }
 
-
+//--------------------------------------------
+// find points in AABB
+// pretty straightforward
 static void _findPointsInAABB(KDNode* node, const Vec3& min, const Vec3& max, std::vector<Vec3>& out)
 {
     if(node->isLeaf)
@@ -98,8 +106,8 @@ std::vector<Vec3> KDTree::findPointsInAABB(const Vec3& minDim, const Vec3& maxDi
     return out;
 }
 
-
-// recursive dump
+//-------------------------
+// debug dump
 static void _dump(KDNode* node, int level, const Vec3& ref)
 {
     if(node->isLeaf)
