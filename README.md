@@ -1,7 +1,7 @@
 README
 
 to build:  
-clang++ -std=c++11 -stdlib=libc++ main.cpp  
+clang++ -std=c++11 -stdlib=libc++ *.cpp  
 
 Reference implementation of octree and kdtree.  
 No optimizations.  
